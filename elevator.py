@@ -5,7 +5,8 @@ class Building:
     def __init__(self):
         self.floors_num = random.randint(5, 20)
         self.people_on_floor = self.generate_people_on_floor()
-        self.people_unloaded = {}
+        self.people_unloaded = {floor: []
+                                for floor in range(1, self.floors_num+1)}
 
     def generate_people_on_floor(self):
         # a person value == the floor he needs to get on
@@ -21,10 +22,13 @@ class Building:
 class Elevator:
     def __init__(self, building):
         self.capacity = 5
-        self.floor_on = 1
         self.people_inside = []
         self.direction = 1  # direction value: 1 - up, -1 - down
+
+        self.floor_on = 1
         self.top_floor = building.floors_num
+
+        self.stage = 0
 
     def set_top_floor(self, building):
         if self.people_inside:
@@ -54,28 +58,30 @@ class Elevator:
             else:
                 person_index += 1
 
-    def unload_people(self):
+    def unload_people(self, building):
         while self.floor_on in self.people_inside:
             self.people_inside.remove(self.floor_on)
-
-        # self.print_stage_output()
-        # add accepting 'building' arg
+            building.people_unloaded[self.floor_on].append(self.floor_on)
 
     def move(self, building):
         # on the start floor
+        self.print_stage_output(building)
         self.load_people(building)
         self.set_top_floor(building)
+
         self.floor_on += self.direction
 
         # on the 'between' floors
         while self.floor_on != self.top_floor:
-            self.unload_people()
+            self.unload_people(building)
             self.load_people(building)
             self.set_top_floor(building)
+
+            self.print_stage_output(building)
             self.floor_on += self.direction
 
         # on the top_floor
-        self.unload_people()
+        self.unload_people(building)
         self.set_direction(building)
 
     def set_direction(self, building):
@@ -97,11 +103,39 @@ class Elevator:
         else:
             pass
 
-    def print_stage_output(self):
-        # values we need to output/
-        # (cycle count) floor_on, people_on_floor, people_inside,
-        #               people_unloaded, direction
-        pass
+    def print_stage_output(self, building):
+        self.stage += 1
+        print('Stage {}'.format(self.stage))
+        print('{:>35} {:>33} {:>31}'.format('People on the floor',
+                                'People inside the elevator',
+                                'People uploaded at the floor'))
+
+        for floor in range(building.floors_num, 0, -1):
+            people_on_floor_str = ' '.join(
+                str(p) for p in building.people_on_floor[floor])
+
+            if self.floor_on == floor:
+                people_in_elevator = ' '.join(
+                    str(p) for p in self.people_inside)
+                match self.direction:
+                    case 1:
+                        direction_sign = '^'
+                    case -1:
+                        direction_sign = 'v'
+            else:
+                people_in_elevator = ''
+                direction_sign = ' '
+
+            people_unloaded_str = ' '.join(
+                str(p) for p in building.people_unloaded[floor])
+
+            print('{:2} | {:^29} | {} {:^29} | {:^29}'.format(
+                floor,
+                people_on_floor_str,
+                direction_sign,
+                people_in_elevator,
+                people_unloaded_str))
+        print('\n')
 
 
 if __name__ == '__main__':
@@ -110,3 +144,6 @@ if __name__ == '__main__':
 
     while any(b.people_on_floor.values()):
         e.move(b)
+
+    # print the final stage
+    e.print_stage_output(b)
