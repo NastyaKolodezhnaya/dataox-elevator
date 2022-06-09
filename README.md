@@ -10,4 +10,4 @@ a simple console-UI app displaying an elevator moving algorithm
 - When loading new passengers, the top floor is recalculated
 
 ## Run
-`git clone https://github.com/NastyaKolodezhnaya/elevator-in-building.git`
+```git clone https://github.com/NastyaKolodezhnaya/elevator-in-building.git```
