@@ -106,9 +106,10 @@ class Elevator:
     def print_stage_output(self, building):
         self.stage += 1
         print('Stage {}'.format(self.stage))
-        print('{:>35} {:>33} {:>31}'.format('People on the floor',
-                                'People inside the elevator',
-                                'People uploaded at the floor'))
+        print('{:>35} {:>33} {:>31}'.format(
+                                    'People on the floor',
+                                    'People inside the elevator',
+                                    'People uploaded at the floor'))
 
         for floor in range(building.floors_num, 0, -1):
             people_on_floor_str = ' '.join(
