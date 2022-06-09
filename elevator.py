@@ -102,15 +102,9 @@ class Elevator:
         pass
 
 
-def print_people_at_floors(obj):
-    for key, value in obj.people_on_floor.items():
-        print(f'Floor {key}: {value}')
-
-
 if __name__ == '__main__':
     b = Building()
     e = Elevator(b)
-    print_people_at_floors(b)
 
     while b.people_on_floor:
         e.move(b)
