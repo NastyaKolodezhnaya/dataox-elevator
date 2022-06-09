@@ -48,7 +48,7 @@ class Elevator:
             if self.direction == 1 and person > self.floor_on:
                 self.people_inside.append(person)
                 building.people_on_floor[self.floor_on].remove(person)
-            elif self.direction == 0 and person < self.floor_on:
+            elif self.direction == -1 and person < self.floor_on:
                 self.people_inside.append(person)
                 building.people_on_floor[self.floor_on].remove(person)
             else:
@@ -65,17 +65,16 @@ class Elevator:
         # on the start floor
         self.load_people(building)
         self.set_top_floor(building)
+        self.floor_on += self.direction
 
         # on the 'between' floors
-        for floor in range(self.floor_on+1, self.top_floor,
-                           self.direction):
-            self.floor_on = floor
+        while self.floor_on != self.top_floor:
             self.unload_people()
             self.load_people(building)
             self.set_top_floor(building)
+            self.floor_on += self.direction
 
         # on the top_floor
-        self.floor_on += self.direction
         self.unload_people()
         self.set_direction(building)
 
@@ -91,6 +90,9 @@ class Elevator:
                 self.direction = -1
             else:
                 pass
+        # if the floor_on value is boundary
+        elif self.floor_on in (1, building.floors_num):
+            self.direction *= -1
         # keep the previous direction if there is no people
         else:
             pass
@@ -106,5 +108,5 @@ if __name__ == '__main__':
     b = Building()
     e = Elevator(b)
 
-    while b.people_on_floor:
+    while any(b.people_on_floor.values()):
         e.move(b)
