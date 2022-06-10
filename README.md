@@ -11,3 +11,5 @@ a simple console-UI app displaying an elevator moving algorithm
 
 ## Run
 ```git clone https://github.com/NastyaKolodezhnaya/elevator-in-building.git```
+
+```python3 elevator.py```
